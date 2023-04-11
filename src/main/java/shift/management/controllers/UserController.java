@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import shift.management.dto.GetListUserRes;
 import shift.management.service.UserService;
 
-@CrossOrigin(origins = "http://localhost:8081")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/users")
 public class UserController {

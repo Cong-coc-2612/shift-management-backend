@@ -22,7 +22,7 @@ import shift.management.dto.EditShiftReq;
 import shift.management.dto.GetShiftRes;
 import shift.management.service.ShiftService;
 
-@CrossOrigin(origins = "http://localhost:8081")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/shifts")
 public class ShiftController {
@@ -33,12 +33,15 @@ public class ShiftController {
 	@GetMapping("")
 	public ResponseEntity<Map<String, Object>> getAllShiftPage(@RequestParam(required = false) String fullName,
 			@RequestParam(required = false) Long teamId, @RequestParam(required = false) Long userId,
+			@RequestParam(required = false) String startDate, @RequestParam(required = false) String endDate,
 			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
 			@RequestParam(defaultValue = "id,desc") String[] sort) {
 		System.out.println("fullName: " + fullName);
 		System.out.println("teamId: " + teamId);
 		System.out.println("userId: " + userId);
-		var response = shiftService.getAllShiftPage(fullName, teamId, userId, page, size, sort);
+		System.out.println("startDate: " + startDate);
+		System.out.println("endDate: " + endDate);
+		var response = shiftService.getAllShiftPage(fullName, teamId, userId, startDate, endDate, page, size, sort);
 		if (Objects.nonNull(response)) {
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		} else {
@@ -62,7 +65,7 @@ public class ShiftController {
 		shiftService.updateShift(id, shift);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/{id}/status")
 	public ResponseEntity<Void> updateShiftStatus(@PathVariable("id") long id, @RequestParam String status) {
 		shiftService.updateShiftStatus(id, status);

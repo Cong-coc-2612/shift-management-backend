@@ -7,7 +7,7 @@ import shift.management.dto.EditShiftReq;
 import shift.management.dto.GetShiftRes;
 
 public interface ShiftService {
-	Map<String, Object> getAllShiftPage(String fullName, Long teamId, Long userId, int page, int size, String[] sort);
+	Map<String, Object> getAllShiftPage(String fullName, Long teamId, Long userId, String startDate, String endDate, int page, int size, String[] sort);
 
 	GetShiftRes getShiftById(long id);
 

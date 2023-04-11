@@ -38,8 +38,8 @@ public class ShiftServiceImpl implements ShiftService {
 	@Autowired
 	private ModelMapper mapper;
 
-	public Map<String, Object> getAllShiftPage(String fullName, Long teamId, Long userId, int page, int size,
-			String[] sort) {
+	public Map<String, Object> getAllShiftPage(String fullName, Long teamId, Long userId, String startDate,
+			String endDate, int page, int size, String[] sort) {
 		try {
 			List<Order> orders = new ArrayList<Order>();
 
@@ -59,18 +59,44 @@ public class ShiftServiceImpl implements ShiftService {
 			Pageable pagingSort = PageRequest.of(page, size, Sort.by(orders));
 
 			Page<Shift> pageShifts;
-			if (fullName == null) {
-				if (teamId == null) {
-					if (userId == null) {
-						pageShifts = shiftRepository.findAll(pagingSort);
+			if (startDate != null | endDate != null) {
+				if(startDate == null ) startDate = "1000-01-01";
+				if(endDate == null ) endDate = "9999-01-01";
+				LocalDate startDateSearch = LocalDate.parse(startDate).isBefore(LocalDate.parse(endDate))
+						? LocalDate.parse(startDate)
+						: LocalDate.parse(endDate);
+				LocalDate endDateSearch = LocalDate.parse(startDate).isBefore(LocalDate.parse(endDate)) ? LocalDate.parse(endDate)
+						: LocalDate.parse(startDate);
+				if (fullName == null) {
+					if (teamId == null) {
+						if (userId == null) {
+							pageShifts = shiftRepository.findAll(pagingSort);
+						} else {
+							pageShifts = shiftRepository.findByUserIdAndDayStartBetween(userId,
+									startDateSearch, endDateSearch, pagingSort);
+						}
 					} else {
-						pageShifts = shiftRepository.findByUserId(userId, pagingSort);
+						pageShifts = shiftRepository.findByTeamIdAndDayStartBetween(teamId, startDateSearch,
+								endDateSearch, pagingSort);
 					}
 				} else {
-					pageShifts = shiftRepository.findByTeamId(teamId, pagingSort);
+					pageShifts = shiftRepository.findByTeamIdAndFullNameLikeAndDayStartBetween(teamId,
+							"%" + fullName + "%", startDateSearch, endDateSearch, pagingSort);
 				}
 			} else {
-				pageShifts = shiftRepository.findByTeamIdAndFullNameLike(teamId, "%" + fullName + "%", pagingSort);
+				if (fullName == null) {
+					if (teamId == null) {
+						if (userId == null) {
+							pageShifts = shiftRepository.findAll(pagingSort);
+						} else {
+							pageShifts = shiftRepository.findByUserId(userId, pagingSort);
+						}
+					} else {
+						pageShifts = shiftRepository.findByTeamId(teamId, pagingSort);
+					}
+				} else {
+					pageShifts = shiftRepository.findByTeamIdAndFullNameLike(teamId, "%" + fullName + "%", pagingSort);
+				}
 			}
 
 			shifts = pageShifts.getContent().stream().map(shift -> {

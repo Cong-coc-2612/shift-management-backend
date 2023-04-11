@@ -10,19 +10,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import shift.management.entity.Team;
-import shift.management.service.TeamService;
+import shift.management.entity.Order;
+import shift.management.service.OrderService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/teams")
-public class TeamController {
+@RequestMapping("/api/orders")
+public class OrderController {
 	@Autowired
-	private TeamService teamService;
+	private OrderService orderService;
 
 	@GetMapping("")
-	public ResponseEntity<List<Team>> getAllTeam() {
-		var response = teamService.getAll();
+	public ResponseEntity<List<Order>> getAllOrder() {
+		var response = orderService.getAll();
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 }
