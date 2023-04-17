@@ -44,8 +44,12 @@ public class UserServiceImpl implements UserService {
 		listRes = listUser.stream().map(user -> {
 			GetListUserRes userRes = mapper.map(user, GetListUserRes.class);
 			userRes.setGender(user.getGender() ? "Male" : "Female");
-			userRes.setTeamName(teamRepository.findById(user.getTeamId()).get().getTeamName());
-			userRes.setWorkplaceName(workplaceRepository.findById(user.getWorkplaceId()).get().getWorkplaceName());
+			userRes.setTeamName(
+					Objects.nonNull(user.getTeamId()) ? teamRepository.findById(user.getTeamId()).get().getTeamName()
+							: "");
+			userRes.setWorkplaceName(Objects.nonNull(user.getWorkplaceId())
+					? workplaceRepository.findById(user.getWorkplaceId()).get().getWorkplaceName()
+					: "");
 			return userRes;
 		}).collect(Collectors.toList());
 
@@ -57,8 +61,11 @@ public class UserServiceImpl implements UserService {
 		var user = userRepository.findById(id).get();
 		GetListUserRes userRes = mapper.map(user, GetListUserRes.class);
 		userRes.setGender(user.getGender() ? "Male" : "Female");
-		userRes.setTeamName(teamRepository.findById(user.getTeamId()).get().getTeamName());
-		userRes.setWorkplaceName(workplaceRepository.findById(user.getWorkplaceId()).get().getWorkplaceName());
+		userRes.setTeamName(
+				Objects.nonNull(user.getTeamId()) ? teamRepository.findById(user.getTeamId()).get().getTeamName() : "");
+		userRes.setWorkplaceName(Objects.nonNull(user.getWorkplaceId())
+				? workplaceRepository.findById(user.getWorkplaceId()).get().getWorkplaceName()
+				: "");
 		return userRes;
 	}
 }
